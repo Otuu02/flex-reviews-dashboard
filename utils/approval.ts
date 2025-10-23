@@ -1,26 +1,19 @@
-// Store approved reviews in localStorage
+// utils/approval.ts
 
-export type ApprovedMap = Record<number, boolean>; // mapping of reviewId -> approved
+const STORAGE_KEY = "approved_reviews";
 
-const STORAGE_KEY = "approvedReviews";
-
-// Get approved reviews from localStorage
-export function getApproved(): ApprovedMap {
-  if (typeof window === "undefined") return {};
+export function getApproved(): Record<number, boolean> {
+  if (typeof window === "undefined") return {}; // SSR safety
   try {
-    const data = localStorage.getItem(STORAGE_KEY);
-    return data ? (JSON.parse(data) as ApprovedMap) : {};
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
   } catch {
     return {};
   }
 }
 
-// Save approved reviews to localStorage
-export function setApproved(map: ApprovedMap) {
-  if (typeof window === "undefined") return;
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
-  } catch {
-    // ignore errors
-  }
+export function toggleApproval(reviewId: number) {
+  if (typeof window === "undefined") return; // SSR safety
+  const approvals = getApproved();
+  approvals[reviewId] = !approvals[reviewId];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(approvals));
 }
