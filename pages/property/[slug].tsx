@@ -9,44 +9,35 @@ export default function PropertyPage() {
 
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const approvedMap = getApproved();
 
-  const approvedMap = getApproved(); // IDs are strings
+  // Safely get slug as string
+  const displaySlug = Array.isArray(slug) ? slug[0] : slug;
 
   useEffect(() => {
-    if (!slug) return;
-
+    if (!displaySlug) return;
     fetch("/api/reviews/hostaway")
       .then((r) => r.json())
       .then((d) => {
-        console.log("All Reviews →", d.reviews);
-        console.log("Approved Map →", approvedMap);
-
-        // Filter reviews for this property and approved
         const filtered = d.reviews.filter(
           (review: any) =>
-            review.listingSlug === slug &&
-            approvedMap[review.id.toString()] // convert id to string
+            review.listingSlug === displaySlug && approvedMap[review.id]
         );
-
         setReviews(filtered);
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch reviews:", err);
-        setLoading(false);
       });
-  }, [slug, approvedMap]);
+  }, [displaySlug]);
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <h1 className="text-xl font-bold mb-4">
-        {slug ? slug.replace(/-/g, " ") : "Property"}
+        {displaySlug ? displaySlug.replace(/-/g, " ") : "Property"}
       </h1>
 
       {loading ? (
         <div>Loading...</div>
       ) : reviews.length === 0 ? (
-        <div>No approved reviews yet. Please approve reviews in the dashboard first.</div>
+        <div>No approved reviews for this property.</div>
       ) : (
         <div className="space-y-4">
           {reviews.map((r) => (
