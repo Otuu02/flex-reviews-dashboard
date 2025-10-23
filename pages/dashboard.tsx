@@ -42,38 +42,4 @@ export default function Dashboard() {
 
               <p className="mt-2 text-gray-300">{review.publicReview}</p>
 
-              <div className="mt-2 flex gap-2 flex-wrap">
-                {Object.entries(review.categories || {}).map(([k, v]) => (
-                  <span
-                    key={k}
-                    className="text-xs px-2 py-1 bg-gray-700 rounded"
-                  >
-                    {k}: {String(v)}
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-4 flex justify-end">
-                <button
-                  onClick={() => handleToggleApproval(review.id)}
-                  className="px-4 py-1 bg-red-600 hover:bg-red-700 rounded text-sm"
-                >
-                  Remove Approval
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div className="mt-6">
-        <Link
-          href="/"
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded text-white"
-        >
-          Back to Home
-        </Link>
-      </div>
-    </div>
-  );
-}
+              <div className="mt-
